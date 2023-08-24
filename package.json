@@ -23,5 +23,8 @@
   "bugs": {
     "url": "https://github.com/Bryantellius/basic-mern-template/issues"
   },
-  "homepage": "https://github.com/Bryantellius/basic-mern-template#readme"
+  "homepage": "https://github.com/Bryantellius/basic-mern-template#readme",
+  "dependencies": {
+    "ejs": "^3.1.9"
+  }
 }

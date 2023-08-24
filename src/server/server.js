@@ -3,7 +3,9 @@ import morgan from "morgan";
 import cors from "cors";
 import apiRouter from "./routes";
 import config from "./config";
+import join from "express";
 import { errorHandler } from "./middlewares/errorHandler";
+import articleRouter from "./routes/articles";
 
 const app = express();
 
@@ -25,7 +27,7 @@ app.use(morgan("dev"));
 /**
  * Directs incoming static asset requests to the public folder
  */
-app.use(express.static(join(__dirname, "../client/build")));
+// app.use(express.static(join(__dirname, "../client/build")));
 
 /**
  * Directs all routes starting with /api to the top level api express router
@@ -36,13 +38,25 @@ app.use("/api", apiRouter);
  * Sends the react app index.html for page requests
  * Only needed in production when you are not using the react dev server
  */
-app.use((req, res, next) => {
-  try {
-    res.sendFile(join(__dirname, "../client/build/index.html"));
-  } catch (error) {
-    next(error);
-  }
-});
+app.set("view engine", "ejs");
+
+app.use("/articles", articleRouter);
+
+app.get("/", (req, res, next) => {
+  const articles = [{
+    title: "test article",
+    createdAt: new Date(),
+    description: "test description"
+  }];
+  res.render("index", { articles: articles });
+})
+// app.use((req, res, next) => {
+//   try {
+//     res.sendFile(join(__dirname, "../client/build/index.html"));
+//   } catch (error) {
+//     next(error);
+//   }
+// });
 
 /**
  * Error handler middleware
