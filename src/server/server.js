@@ -1,4 +1,5 @@
 import express from "express";
+import mongoose from "mongoose";
 import morgan from "morgan";
 import cors from "cors";
 import apiRouter from "./routes";
@@ -6,6 +7,8 @@ import config from "./config";
 import join from "express";
 import { errorHandler } from "./middlewares/errorHandler";
 import articleRouter from "./routes/articles";
+
+mongoose.connect("mongodb://localhost/blog");
 
 const app = express();
 
@@ -40,7 +43,7 @@ app.use("/api", apiRouter);
  */
 app.set("view engine", "ejs");
 
-app.use("/articles", articleRouter);
+app.use(express.urlencoded({ extended: false }));
 
 app.get("/", (req, res, next) => {
   const articles = [{
@@ -48,7 +51,7 @@ app.get("/", (req, res, next) => {
     createdAt: new Date(),
     description: "test description"
   }];
-  res.render("index", { articles: articles });
+  res.render("articles/index", { articles: articles });
 })
 // app.use((req, res, next) => {
 //   try {
@@ -61,6 +64,8 @@ app.get("/", (req, res, next) => {
 /**
  * Error handler middleware
  */
+app.use("/articles", articleRouter);
+
 app.use(errorHandler);
 
 /**
